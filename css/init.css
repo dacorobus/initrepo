@@ -8,6 +8,25 @@
     justify-content: space-between;
 }
 
+.two-column {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.two-column>div:first-of-type(){
+    flex: auto;
+    max-width: 80%;
+    min-width: 80%;
+}
+
+.two-column>div:last-of-type(){
+    flex: auto;
+    max-width: 20%;
+    min-width: 20%;
+}
 .autoroll-highlight {
     background-color: #c7c7c7;
 }
