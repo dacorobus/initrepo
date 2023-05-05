@@ -75,6 +75,16 @@ var myNameSpace = myNameSpace || {};
                 });
             }
 
+            function updateLocalStorage(){
+                const ls = localStorage;
+                if(ls.hasOwnProperty("initrepo")){
+                    console.log(ls.getItem("initrepo"));
+                }else{
+                    console.log('adding initrepo');
+                    ls.setItem("initrepo","repo has been created");
+                }
+            };
+
             function addToCharacters(character) {
                 if (characters.length === 0) {
                     characters.push(character);
@@ -88,6 +98,7 @@ var myNameSpace = myNameSpace || {};
                     }
                     characters = tempArr.map((item) => item);
                 }
+                updateLocalStorage();
 
             };
 
