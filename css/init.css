@@ -14,15 +14,16 @@
     justify-content: flex-start;
     align-items: flex-start;
     gap: 1rem;
+    box-sizing: border-box;
 }
 
-.two-column>div:first-of-type(){
+.two-column>div:first-child{
     flex: auto;
-    max-width: 80%;
-    min-width: 80%;
+    max-width: 75%;
+    min-width: 75%;
 }
 
-.two-column>div:last-of-type(){
+.two-column>div:last-child{
     flex: auto;
     max-width: 20%;
     min-width: 20%;
