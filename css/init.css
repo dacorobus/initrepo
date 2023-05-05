@@ -1,0 +1,17 @@
+.inittable {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #a7a7a7;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+.autoroll-highlight {
+    background-color: #c7c7c7;
+}
+
+.remove-row {
+    display: none;
+}
