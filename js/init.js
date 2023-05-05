@@ -202,13 +202,21 @@ var myNameSpace = myNameSpace || {};
                     const arr = characters.filter((item) => {
                         return item.autoRoll;
                     });
-                    console.log(arr);
                     const updateInit = arr.map((item) => {
                         item.init = rollInit(0);
                         return item;
                     });
-                    console.log(updateInit)
                     updateInit.forEach((item) => {
+                        addToCharacters(item);
+                    });
+                    const noAutoArray = characters.filter((item) => {
+                        return !item.autoRoll;
+                    });
+                    const updateNoAuto = noAutoArray.map((item) => {
+                        item.init = 0;
+                        return item;
+                    });
+                    updateNoAuto.forEach((item) => {
                         addToCharacters(item);
                     });
 
