@@ -67,8 +67,6 @@ var myNameSpace = myNameSpace || {};
             function clearAddUpdate() {
                 const elems = document.querySelectorAll('#addupdatecontainer input');
                 elems.forEach((item) => {
-                    console.log(item.id);
-                    console.log(item.type);
                     if (item.type === "checkbox") item.checked = false;
                     if (item.type === "text") item.value = '';
                     if (item.type === "number") item.value = 0;
@@ -78,7 +76,7 @@ var myNameSpace = myNameSpace || {};
             function updateLocalStorage(){
                 const ls = localStorage;
                 if(ls.hasOwnProperty("initrepo")){
-                    console.log(ls.getItem("initrepo"));
+                    ls.setItem("initrepo",JSON.stringify(characters));
                 }else{
                     console.log('adding initrepo');
                     ls.setItem("initrepo","repo has been created");
@@ -164,7 +162,6 @@ var myNameSpace = myNameSpace || {};
                 const listContainer = document.getElementById('initcontainer');
                 listContainer.innerHTML = '';
                 characters.forEach((item) => {
-                    console.log(characters);
                     listContainer.append(createRow(item));
                 });
             };
@@ -227,6 +224,14 @@ var myNameSpace = myNameSpace || {};
                         }
                     });
                 });
+
+                // localstorage
+                const ls = localStorage;
+                if(ls.hasOwnProperty("initrepo")){
+                    const lsCharacters = JSON.parse(ls.getItem("initrepo"));
+                    characters = lsCharacters.map(item => item);
+                    updateList();
+                }
             }
 
             ns.waitForElement = waitForElement;
