@@ -120,6 +120,18 @@ var myNameSpace = myNameSpace || {};
                 updateList();
             };
 
+            function removeItem() {
+                const nameElem = document.getElementById('init-guid');
+                if(nameElem.value !== ''){
+                    const items = characters.filter((item) => {
+                        return item.guid !== nameElem.value;
+                    });
+                    characters = items.map(item => item);
+                    clearAddUpdate();
+                    updateList();
+                }
+            }
+
             function rowElement(labelText, dataText) {
                 let div = document.createElement('div');
                 let label = document.createElement('span');
@@ -225,6 +237,13 @@ var myNameSpace = myNameSpace || {};
                     });
                 });
 
+                const btnRemove = document.getElementById('button-remove');
+                btnRemove.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    removeItem(); 
+                })
+
                 // localstorage
                 const ls = localStorage;
                 if(ls.hasOwnProperty("initrepo")){
@@ -237,4 +256,4 @@ var myNameSpace = myNameSpace || {};
             ns.waitForElement = waitForElement;
         })(myNameSpace);
 
-        myNameSpace.waitForElement('button-sort');
+        myNameSpace.waitForElement('button-next');
