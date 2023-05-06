@@ -132,6 +132,21 @@ var myNameSpace = myNameSpace || {};
                 }
             }
 
+            function copyItem(){
+                const elem = document.getElementById('init-guid');
+                if(elem.value !== ''){
+                    const item = characters.filter((item) => {
+                        return item.guid === elem.value;
+                    });
+                    item.forEach((newItem) => {
+                        let newObj = JSON.parse(JSON.stringify(newItem));
+                        newObj.guid = guid();
+                        addToCharacters(newObj);
+                    });
+                    updateList();
+                }
+            }
+
             function rowElement(labelText, dataText) {
                 let div = document.createElement('div');
                 let label = document.createElement('span');
@@ -250,7 +265,14 @@ var myNameSpace = myNameSpace || {};
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     removeItem(); 
-                })
+                });
+
+                const btnCopy = document.getElementById('button-copy');
+                btnCopy.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    copyItem();
+                });
 
                 // localstorage
                 const ls = localStorage;
