@@ -1,6 +1,8 @@
 var myNameSpace = myNameSpace || {};
         (function (ns) {
             let characters = [];
+            let activeCharacter = [];
+            let activeCharacterIndex = 0;
 
             function guid() {
                 return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
@@ -30,6 +32,10 @@ var myNameSpace = myNameSpace || {};
                     return hitsPenalty + addtnlPenalty;
                 };
 
+                function calcAttackTotal(totalPenalty, attackRoll){
+                    return totalPenalty + attackRoll;
+                };
+
                 this.name = data?.name || '';
                 this.init = data?.init ? makeInt(data.init) : 0;
                 this.rndOfStun = data?.rndofstun ? makeInt(data.rndofstun) : 0;
@@ -43,6 +49,11 @@ var myNameSpace = myNameSpace || {};
                 this.totalPenalty = addPenalty(this.hitsPenalty, this.addtnlPenalty);
                 this.armorType = data?.armortype ? makeInt(data.armortype) : 0;
                 this.defenceBonus = data?.defencebonus ? makeInt(data.defencebonus) : 0;
+                this.offenceBonus = data?.offencebonus ? makeInt(data.offencebonus) : 0;
+                this.attackRoll = data?.attackroll ? makeInt(data.attackroll) : 0;
+                this.attackTotal = () => {
+                    return calcAttackTotal(this.attackRoll,calcAttackTotal(this.offenceBonus, this.totalPenalty));
+                }
                 this.autoRoll = data?.autoroll || false;
                 this.guid = data?.guid || guid();
             }
@@ -135,26 +146,24 @@ var myNameSpace = myNameSpace || {};
             function copyItem(){
                 const elem = document.getElementById('init-guid');
                 if(elem.value !== ''){
-                    const item = characters.filter((item) => {
-                        return item.guid === elem.value;
-                    });
-                    item.forEach((newItem) => {
-                        let newObj = JSON.parse(JSON.stringify(newItem));
-                        newObj.guid = guid();
-                        addToCharacters(newObj);
-                    });
-                    updateList();
+                    elem.value = guid();
+                    addUpdate();
                 }
             }
 
             function rowElement(labelText, dataText) {
                 let div = document.createElement('div');
-                let label = document.createElement('span');
-                label.innerText = labelText;
-                let name = document.createElement('span');
-                name.innerText = dataText;
-                div.append(label);
-                div.append(name);
+                if(labelText){
+                    let label = document.createElement('span');
+                        label.innerText = labelText;
+                    let name = document.createElement('span');
+                    name.innerText = dataText;
+                    div.append(label);
+                    div.append(name);
+                } else {
+                    let i = document.createElement('i');
+                    i.classList.add('five-star');
+                }
                 return div;
             }
 
@@ -169,6 +178,7 @@ var myNameSpace = myNameSpace || {};
                     }
                 }
                 row.dataset.guid = rowData.guid;
+                row.append(rowElement());
                 row.append(rowElement('Name:', rowData.name));
                 row.append(rowElement('Initiative:', rowData.init));
                 row.append(rowElement('Rnds Of Stun:', rowData.rndOfStun));
@@ -181,7 +191,10 @@ var myNameSpace = myNameSpace || {};
                 row.append(rowElement('Addtional Penalty:', rowData.addtnlPenalty));
                 row.append(rowElement('Total Penalty:', rowData.totalPenalty));
                 row.append(rowElement('Armor Type:', rowData.armorType));
+                row.append(rowElement('Offence Bonus:',rowData.offenceBonus));
                 row.append(rowElement('Defence Bonus:', rowData.defenceBonus));
+                row.append(rowElement('Attack Roll:', rowData.attackRoll));
+                row.append(rowElement('Attack Total:', rowData.attackTotal()));
                 return row;
             };
 
@@ -193,7 +206,7 @@ var myNameSpace = myNameSpace || {};
                 });
             };
 
-            function rollInit(bonus = 0) {
+            function rollInit(bonus = 0, isAttack) {
 
                 let roll = Math.floor(Math.random() * 100) + 1;
                 if (roll > 95) {
@@ -201,6 +214,27 @@ var myNameSpace = myNameSpace || {};
                 }
                 return bonus + roll;
             };
+
+            function showActive () {
+                if(activeCharacter.length > 0 && (activeCharacterIndex + 1) <= activeCharacter.length){
+                    setActiveCharacter(activeCharacterIndex);
+                    activeCharacterIndex++;
+                } 
+            }
+
+            function setActiveCharacter(index){
+                const elems = document.querySelectorAll('.datarow');
+                const elemsArr = Array.from(elems);
+                console.log(elemsArr[index].getBoundingClientRect());
+                const rowClientRect = elemsArr[index].getBoundingClientRect();
+                const elem = document.getElementById('next-init-container');
+                const topAdjust = Math.floor(rowClientRect.height / 4);
+                const leftAdjust = Math.floor(rowClientRect.left / 4);
+                elem.style.top = (rowClientRect.top + topAdjust) + "px";
+                elem.style.left = leftAdjust + "px";
+                
+
+            }
 
             function initApp() {
                 const addUpdateBtn = document.getElementById('button-add-update');
@@ -219,6 +253,7 @@ var myNameSpace = myNameSpace || {};
                     });
                     const updateInit = arr.map((item) => {
                         item.init = rollInit(0);
+                        item.attackRoll = rollInit(0);
                         return item;
                     });
                     updateInit.forEach((item) => {
@@ -235,7 +270,11 @@ var myNameSpace = myNameSpace || {};
                         addToCharacters(item);
                     });
 
+                    activeCharacter = characters.map(item => item);
+
                     updateList();
+                    activeCharacterIndex = 0;
+                    showActive();
                 });
 
                 const initContainer = document.getElementById('initcontainer');
@@ -274,13 +313,29 @@ var myNameSpace = myNameSpace || {};
                     copyItem();
                 });
 
+                const btnShowActive = document.getElementById('button-showactive');
+                btnShowActive.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    showActive();
+                })
+
                 // localstorage
                 const ls = localStorage;
                 if(ls.hasOwnProperty("initrepo")){
                     const lsCharacters = JSON.parse(ls.getItem("initrepo"));
-                    characters = lsCharacters.map(item => item);
+                    characters = lsCharacters.map(item => {
+                        const keys = Object.keys(item);
+                        let obj = {};
+                        keys.forEach(key => {
+                            obj[key.toLowerCase()] = item[key];
+                        });
+                        return new person(obj);
+                    });
                     updateList();
                 }
+
+
             }
 
             ns.waitForElement = waitForElement;

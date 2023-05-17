@@ -19,25 +19,74 @@ input[type="checkbox"]:hover {
     flex-wrap: nowrap;
     justify-content: flex-start;
     align-items: flex-start;
-    gap: 1rem;
+    gap: .5rem 1rem;
     box-sizing: border-box;
 }
 
-.two-column>div:first-child{
-    flex: auto;
-    max-width: 75%;
-    min-width: 75%;
+.spacer-column {
+    flex: 0 0 50px;
 }
 
-.two-column>div:last-child{
+.detail-column {
+    flex: auto;
+    max-width: 70%;
+    min-width: 70%;
+}
+
+.add-character-col{
     flex: auto;
     max-width: 20%;
     min-width: 20%;
 }
+
 .autoroll-highlight {
     background-color: #c7c7c7;
 }
 
 .remove-row {
     display: none;
+}
+
+.star-five {
+    margin: 12.5px 0;
+    position: relative;
+    display: block;
+    color: red;
+    width: 0px;
+    height: 0px;
+    border-right: 25px solid transparent;
+    border-bottom: 17.5px solid red;
+    border-left: 25px solid transparent;
+    transform: rotate(35deg);
+}
+.star-five:before {
+    border-bottom: 20px solid red;
+    border-left: 7.5px solid transparent;
+    border-right: 7.5px solid transparent;
+    position: absolute;
+    height: 0;
+    width: 0;
+    top: -11.25px;
+    left: -16.25px;
+    display: block;
+    content: '';
+    transform: rotate(-35deg);
+}
+.star-five:after {
+    position: absolute;
+    display: block;
+    color: red;
+    top: .75px;
+    left:-26.25px;
+    width: 0px;
+    height: 0px;
+    border-right: 25px solid transparent;
+    border-bottom: 17.5px solid red;
+    border-left: 25px solid transparent;
+    transform: rotate(-70deg);
+    content: ''
+}
+
+#next-init-container {
+    display: block;
 }

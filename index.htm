@@ -13,12 +13,12 @@
 
 <body>
     <div class="two-column">
-        <div>
+        <div class="detail-column">
             <div id="initcontainer">
 
             </div>
         </div>
-        <div>
+        <div class="add-character-col">
             <div class="inittable" id="addupdatecontainer">
                 <div><label for="init-name">Name:</label><input type="text" id="init-name" /></div>
                 <div><label for="init-init">Initiative:</label><input type="number" id="init-init" /></div>
@@ -32,7 +32,10 @@
                 <div><label for="init-addtnlpenalty">Addtnl Penalty:</label><input type="number" id="init-addtnlpenalty" /></div>
                 <div><span>Total Penalty</span><span id="init-totalpenalty"></span></div>
                 <div><label for="init-armortype">Armor Type:</label><input type="number" id="init-armortype" /></div>
+                <div><label for="init-offencebonus">Offencive Bonus:</label><input type="number" id="init-offencebonus"/></div>
                 <div><label for="init-defencebonus">Defence Bonus:</label><input type="number" id="init-defencebonus" /></div>
+                <div><span>Attack Roll:</span><span id="init-attackroll"></span></div>
+                <div><span>Attack Total:</span><span id="init-attacktotal"></span></div>
                 <div><label for="init-autoroll">Auto Roll</label><input type="checkbox" value="checkbox" id="init-autoroll" />
                 </div>
                 <div style="display:none;"><input type="text" value='' id="init-guid" /></div>
@@ -47,9 +50,15 @@
                 <button type="button" id="button-copy">Copy</button>
             </div>
             <div>
-                <button type="button" id="button-next">Next Init</button>
+                <button type="button" id="button-next">New Init</button>
+            </div>
+            <div>
+                <button type="button" id="button-showactive">Next Active Init</button>
             </div>
         </div>
+    </div>
+    <div id="next-init-container">
+        <i class="star-five"></i>
     </div>
 </body>
 
