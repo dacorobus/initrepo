@@ -288,13 +288,15 @@ var myNameSpace = myNameSpace || {};
                         return item.guid === guid;
                     });
                     const character = characterArr[0];
+                    const keysToLowerCase = (Object.keys(character)).map(item => item.toLowerCase());
+                    const keys = Object.keys(character);
                     editRow.forEach((elem) => {
                         const item = elem.id.split('-')[1];
                         if (item === 'autoroll') {
                             if ((character.autoRoll && !elem.checked) || (!character.autoRoll && elem.checked))
                                 elem.click();
                         } else {
-                            character.hasOwnProperty(item.toLowerCase()) ? elem.value = character[item.toLowerCase()] : elem.value = 0;
+                            keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase()) !== -1 ? elem.value = character[keys[keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase())]] : elem.value = 0;
                         }
                     });
                 });
