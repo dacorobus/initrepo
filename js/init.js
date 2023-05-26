@@ -82,6 +82,8 @@ var myNameSpace = myNameSpace || {};
                     if (item.type === "text") item.value = '';
                     if (item.type === "number") item.value = 0;
                 });
+                (document.getElementById('init-showattackroll')).innerText = '';
+                (document.getElementById('init-showattacktotal')).innerText = '';
             }
 
             function updateLocalStorage(){
@@ -303,7 +305,12 @@ var myNameSpace = myNameSpace || {};
                             if ((character.autoRoll && !elem.checked) || (!character.autoRoll && elem.checked))
                                 elem.click();
                         } else {
-                            keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase()) !== -1 ? elem.value = character[keys[keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase())]] : elem.value = 0;
+                            if(item === 'attacktotal'){
+                                (document.getElementById('init-showattacktotal')).innerText = character[keys[keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase())]]();
+                                (document.getElementById('init-showattackroll')).innerText = character['attackRoll'];
+                            } else {
+                                keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase()) !== -1 ? elem.value = character[keys[keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase())]] : elem.value = 0;
+                            }
                         }
                     });
                 });
