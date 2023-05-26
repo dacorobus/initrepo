@@ -36,9 +36,17 @@ var myNameSpace = myNameSpace || {};
                     return totalPenalty + attackRoll;
                 };
 
+                function calcInit(init,hitsTotal, hitsTaken){
+                    if(!hitsTotal)
+                        return init;
+                    if(hitsTotal <= hitsTaken){
+                        return -999;
+                    }
+                    return init;
+                };
+
                 this.name = data?.name || '';
                 this.inactive = data?.inactive || false;
-                this.init = this.inactive ? -999 : data?.init ? makeInt(data.init) : 0;
                 this.rndOfStun = data?.rndofstun ? makeInt(data.rndofstun) : 0;
                 this.rndNoParry = data?.rndnoparry ? makeInt(data.rndnoparry) : 0;
                 this.rndMustParry = data?.rndmustparry ? makeInt(data.rndmustparry) : 0;
@@ -56,6 +64,7 @@ var myNameSpace = myNameSpace || {};
                     return calcAttackTotal(this.attackRoll,calcAttackTotal(this.offenceBonus, this.totalPenalty));
                 }
                 this.autoRoll = data?.autoroll || false;
+                this.init = this.inactive ? -10 : data?.init ? calcInit(makeInt(data.init), this.hitsTotal, this.hitsTaken) : 0;
                 this.guid = data?.guid || guid();
 
             }
@@ -187,12 +196,12 @@ var myNameSpace = myNameSpace || {};
                 row.classList.add('datarow');
                 if (!rowData.autoRoll) {
                     row.classList.add('autoroll-highlight');
-                    // if (rowData.init === -999) {
-                    //     row.classList.add('remove-row');
-                    // }
                 }
                 if(rowData.inactive){
                     row.classList.add('inactive-highlight');
+                }
+                if(rowData.init === -999){
+                    row.classList.add('character-dead');
                 }
                 row.dataset.guid = rowData.guid;
                 row.append(createDiv(rowElement('Name:', rowData.name),rowElement('Initiative:', rowData.init)));
@@ -265,15 +274,18 @@ var myNameSpace = myNameSpace || {};
                     e.stopImmediatePropagation();
                     const arr = characters.filter((item) => {
                         return item.autoRoll;
+                    }).map(item => {
+                        const keys = Object.keys(item);
+                        const d = {};
+                        for(let i = 0; i<keys.length; i++){
+                            d[keys.toLowerCase()] = d[keys];
+                        }
+                        return d;
                     });
                     const updateInit = arr.map((item) => {
-                        if(item.inactive){
-                            item.init = -999;
-                            return item
-                        }
                         item.init = rollInit(0);
-                        item.attackRoll = rollInit(0);
-                        return item;
+                        item.attackroll = rollInit(0);
+                        return new person(item);
                     });
                     updateInit.forEach((item) => {
                         addToCharacters(item);

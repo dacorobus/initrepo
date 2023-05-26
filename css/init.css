@@ -66,6 +66,10 @@ input[type="checkbox"]:hover {
     background-color: #a4d2fa; 
 }
 
+.character-dead {
+    background-color: rgb(252, 104, 104);
+}
+
 .remove-row {
     display: none;
 }
