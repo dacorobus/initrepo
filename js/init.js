@@ -37,7 +37,8 @@ var myNameSpace = myNameSpace || {};
                 };
 
                 this.name = data?.name || '';
-                this.init = data?.init ? makeInt(data.init) : 0;
+                this.inactive = data?.inactive || false;
+                this.init = this.inactive ? -999 : data?.init ? makeInt(data.init) : 0;
                 this.rndOfStun = data?.rndofstun ? makeInt(data.rndofstun) : 0;
                 this.rndNoParry = data?.rndnoparry ? makeInt(data.rndnoparry) : 0;
                 this.rndMustParry = data?.rndmustparry ? makeInt(data.rndmustparry) : 0;
@@ -56,6 +57,7 @@ var myNameSpace = myNameSpace || {};
                 }
                 this.autoRoll = data?.autoroll || false;
                 this.guid = data?.guid || guid();
+
             }
 
             function waitForElement(id) {
@@ -113,7 +115,7 @@ var myNameSpace = myNameSpace || {};
 
             };
 
-            function addUpdate() {
+            function addUpdate(clear) {
                 const nameElem = document.getElementById('init-name');
                 if (nameElem.value === '') {
                     alert("a character must contain a name");
@@ -129,7 +131,8 @@ var myNameSpace = myNameSpace || {};
                     });
                     addToCharacters(new person(d));
                 }
-                clearAddUpdate();
+                if(clear)
+                    clearAddUpdate();
                 updateList();
             };
 
@@ -149,7 +152,7 @@ var myNameSpace = myNameSpace || {};
                 const elem = document.getElementById('init-guid');
                 if(elem.value !== ''){
                     elem.value = guid();
-                    addUpdate();
+                    addUpdate(false);
                 }
             }
 
@@ -184,9 +187,12 @@ var myNameSpace = myNameSpace || {};
                 row.classList.add('datarow');
                 if (!rowData.autoRoll) {
                     row.classList.add('autoroll-highlight');
-                    if (rowData.init === -999) {
-                        row.classList.add('remove-row');
-                    }
+                    // if (rowData.init === -999) {
+                    //     row.classList.add('remove-row');
+                    // }
+                }
+                if(rowData.inactive){
+                    row.classList.add('inactive-highlight');
                 }
                 row.dataset.guid = rowData.guid;
                 row.append(createDiv(rowElement('Name:', rowData.name),rowElement('Initiative:', rowData.init)));
@@ -250,7 +256,7 @@ var myNameSpace = myNameSpace || {};
                 addUpdateBtn.addEventListener('click', (e) => {
                     e.preventDefault();
                     e.stopImmediatePropagation();
-                    addUpdate();
+                    addUpdate(true);
                 });
 
                 const nextInitBtn = document.getElementById('button-next');
@@ -261,6 +267,10 @@ var myNameSpace = myNameSpace || {};
                         return item.autoRoll;
                     });
                     const updateInit = arr.map((item) => {
+                        if(item.inactive){
+                            item.init = -999;
+                            return item
+                        }
                         item.init = rollInit(0);
                         item.attackRoll = rollInit(0);
                         return item;
@@ -272,7 +282,7 @@ var myNameSpace = myNameSpace || {};
                         return !item.autoRoll;
                     });
                     const updateNoAuto = noAutoArray.map((item) => {
-                        item.init = 99999;
+                        item.init = 999;
                         return item;
                     });
                     updateNoAuto.forEach((item) => {
@@ -304,7 +314,11 @@ var myNameSpace = myNameSpace || {};
                         if (item === 'autoroll') {
                             if ((character.autoRoll && !elem.checked) || (!character.autoRoll && elem.checked))
                                 elem.click();
-                        } else {
+                        } else if(item === 'inactive'){
+                            if((character.inactive && !elem.checked) || (!character.inactive && elem.checked))
+                                elem.click();
+                        }
+                        else {
                             if(item === 'attacktotal'){
                                 (document.getElementById('init-showattacktotal')).innerText = character[keys[keysToLowerCase.findIndex(keyValue => keyValue === item.toLowerCase())]]();
                                 (document.getElementById('init-showattackroll')).innerText = character['attackRoll'];
@@ -327,6 +341,13 @@ var myNameSpace = myNameSpace || {};
                     e.preventDefault();
                     e.stopImmediatePropagation();
                     copyItem();
+                });
+
+                const btnClear = document.getElementById('button-clear');
+                btnClear.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    clearAddUpdate();
                 });
 
                 const btnShowActive = document.getElementById('button-showactive');

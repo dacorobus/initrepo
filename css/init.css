@@ -62,6 +62,10 @@ input[type="checkbox"]:hover {
     background-color: #c7c7c7;
 }
 
+.inactive-highlight {
+    background-color: #a4d2fa; 
+}
+
 .remove-row {
     display: none;
 }
