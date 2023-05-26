@@ -158,12 +158,10 @@ var myNameSpace = myNameSpace || {};
                         label.innerText = labelText;
                     let name = document.createElement('span');
                     name.innerText = dataText;
+                    name.classList.add('make-bold');
                     div.append(label);
                     div.append(name);
-                } else {
-                    let i = document.createElement('i');
-                    i.classList.add('five-star');
-                }
+                } 
                 return div;
             }
 

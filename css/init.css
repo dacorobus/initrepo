@@ -117,3 +117,7 @@ input[type="checkbox"]:hover {
     overflow-x: hidden;
     scrollbar-gutter: stable;
 }
+
+.make-bold {
+    font-weight: 700;
+}
