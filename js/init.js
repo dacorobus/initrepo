@@ -167,6 +167,17 @@ var myNameSpace = myNameSpace || {};
                 return div;
             }
 
+            function createDiv (){
+                const div = document.createElement('div');
+                if(arguments.length > 0){
+                    const args = Array.from(arguments);
+                    args.forEach(item => {
+                        div.append(item);
+                    });
+                }
+                return div;
+            };
+
             function createRow(rowData) {
                 let row = document.createElement('div');
                 row.classList.add('inittable');
@@ -178,23 +189,21 @@ var myNameSpace = myNameSpace || {};
                     }
                 }
                 row.dataset.guid = rowData.guid;
-                row.append(rowElement());
-                row.append(rowElement('Name:', rowData.name));
-                row.append(rowElement('Initiative:', rowData.init));
-                row.append(rowElement('Rnds Of Stun:', rowData.rndOfStun));
-                row.append(rowElement('Rnds No Parry:', rowData.rndNoParry));
-                row.append(rowElement('Rnds Must Parry:', rowData.rndMustParry));
-                row.append(rowElement('Bleed Per Rnd:', rowData.bleedPerRnd));
-                row.append(rowElement('Hits Total:', rowData.hitsTotal));
-                row.append(rowElement('Hits Taken:', rowData.hitsTaken));
-                row.append(rowElement('Hits Penalty:', rowData.hitsPenalty));
-                row.append(rowElement('Addtional Penalty:', rowData.addtnlPenalty));
-                row.append(rowElement('Total Penalty:', rowData.totalPenalty));
-                row.append(rowElement('Armor Type:', rowData.armorType));
-                row.append(rowElement('Offence Bonus:',rowData.offenceBonus));
-                row.append(rowElement('Defence Bonus:', rowData.defenceBonus));
-                row.append(rowElement('Attack Roll:', rowData.attackRoll));
-                row.append(rowElement('Attack Total:', rowData.attackTotal()));
+                row.append(createDiv(rowElement('Name:', rowData.name),rowElement('Initiative:', rowData.init)));
+                row.append(createDiv(rowElement('Rnds Of Stun:', rowData.rndOfStun),
+                    rowElement('Rnds No Parry:', rowData.rndNoParry),
+                    rowElement('Rnds Must Parry:', rowData.rndMustParry)));
+                row.append(createDiv(rowElement('Bleed Per Rnd:', rowData.bleedPerRnd),
+                    rowElement('Hits Total:', rowData.hitsTotal),
+                    rowElement('Hits Taken:', rowData.hitsTaken)));
+                row.append(createDiv(rowElement('Hits Penalty:', rowData.hitsPenalty),
+                    rowElement('Addtional Penalty:', rowData.addtnlPenalty),
+                    rowElement('Total Penalty:', rowData.totalPenalty)));
+                row.append(createDiv(rowElement('Armor Type:', rowData.armorType),
+                    rowElement('Defence Bonus:', rowData.defenceBonus)));
+                row.append(createDiv(rowElement('Offence Bonus:',rowData.offenceBonus),
+                    rowElement('Attack Roll:', rowData.attackRoll),
+                    rowElement('Attack Total:', rowData.attackTotal())));
                 return row;
             };
 
