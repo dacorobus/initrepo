@@ -83,6 +83,9 @@ var myNameSpace = myNameSpace || {};
             function arrSort(a, b) {
                 if (a.init > b.init) return -1;
                 if (a.init < b.init) return 1;
+                if (a.totalPenalty > b.totalPenalty) return -1;
+                if (a.totalPenalty < b.totalPenalty) return 1;
+
                 return 0;
             }
 
@@ -278,7 +281,7 @@ var myNameSpace = myNameSpace || {};
                         const keys = Object.keys(item);
                         const d = {};
                         for(let i = 0; i<keys.length; i++){
-                            d[keys.toLowerCase()] = d[keys];
+                            d[keys[i].toLowerCase()] = item[keys[i]];
                         }
                         return d;
                     });
