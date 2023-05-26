@@ -29,14 +29,12 @@ input[type="checkbox"]:hover {
 
 .detail-column {
     flex: auto;
-    max-width: 70%;
-    min-width: 70%;
+    max-width: calc(100% - 250px);
+    min-width: 500px;
 }
 
 .add-character-col{
-    flex: auto;
-    max-width: 20%;
-    min-width: 20%;
+    flex: 0 0 200px;
 }
 
 .autoroll-highlight {

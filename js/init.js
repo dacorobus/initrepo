@@ -263,7 +263,7 @@ var myNameSpace = myNameSpace || {};
                         return !item.autoRoll;
                     });
                     const updateNoAuto = noAutoArray.map((item) => {
-                        item.init = 0;
+                        item.init = 99999;
                         return item;
                     });
                     updateNoAuto.forEach((item) => {
