@@ -90,3 +90,9 @@ input[type="checkbox"]:hover {
 #next-init-container {
     display: block;
 }
+
+.detail-column {
+    max-height: 100vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
