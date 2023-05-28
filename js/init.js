@@ -102,12 +102,11 @@ var myNameSpace = myNameSpace || {};
 
             function updateLocalStorage(){
                 const ls = localStorage;
-                if(ls.hasOwnProperty("initrepo")){
-                    ls.setItem("initrepo",JSON.stringify(characters));
-                }else{
-                    console.log('adding initrepo');
-                    ls.setItem("initrepo","repo has been created");
-                }
+                const items = {
+                    activeCharacterIndex: activeCharacterIndex,
+                    characters: characters
+                };
+                ls.setItem("initrepo",JSON.stringify(items));
             };
 
             function addToCharacters(character) {
@@ -122,6 +121,7 @@ var myNameSpace = myNameSpace || {};
                         tempArr.sort(arrSort);
                     }
                     characters = tempArr.map((item) => item);
+                    activeCharacter = tempArr.map((item) => item);
                 }
                 updateLocalStorage();
 
@@ -206,6 +206,9 @@ var myNameSpace = myNameSpace || {};
                 if(rowData.init === -999){
                     row.classList.add('character-dead');
                 }
+                if(rowData.guid === activeCharacter[activeCharacterIndex].guid){
+                    row.classList.add('active-character');
+                }
                 row.dataset.guid = rowData.guid;
                 row.append(createDiv(rowElement('Name:', rowData.name),rowElement('Initiative:', rowData.init)));
                 row.append(createDiv(rowElement('Rnds Of Stun:', rowData.rndOfStun),
@@ -231,6 +234,7 @@ var myNameSpace = myNameSpace || {};
                 characters.forEach((item) => {
                     listContainer.append(createRow(item));
                 });
+                updateLocalStorage();
             };
 
             function rollInit(bonus = 0, isAttack) {
@@ -243,25 +247,13 @@ var myNameSpace = myNameSpace || {};
             };
 
             function showActive () {
-                if(activeCharacter.length > 0 && (activeCharacterIndex + 1) <= activeCharacter.length){
-                    setActiveCharacter(activeCharacterIndex);
+                if(activeCharacter.length > 0 && (activeCharacterIndex + 1) < activeCharacter.length){
                     activeCharacterIndex++;
+                    updateList();
                 } 
-            }
-
-            function setActiveCharacter(index){
-                const elems = document.querySelectorAll('.datarow');
-                const elemsArr = Array.from(elems);
-                console.log(elemsArr[index].getBoundingClientRect());
-                const rowClientRect = elemsArr[index].getBoundingClientRect();
-                const elem = document.getElementById('next-init-container');
-                const topAdjust = Math.floor(rowClientRect.height / 4);
-                const leftAdjust = Math.floor(rowClientRect.left / 4);
-                elem.style.top = (rowClientRect.top + topAdjust) + "px";
-                elem.style.left = leftAdjust + "px";
                 
-
             }
+
 
             function initApp() {
                 const addUpdateBtn = document.getElementById('button-add-update');
@@ -306,9 +298,9 @@ var myNameSpace = myNameSpace || {};
 
                     activeCharacter = characters.map(item => item);
 
-                    updateList();
                     activeCharacterIndex = 0;
-                    showActive();
+                    updateList();
+                    // showActive();
                 });
 
                 const initContainer = document.getElementById('initcontainer');
@@ -372,11 +364,8 @@ var myNameSpace = myNameSpace || {};
                     showActive();
                 })
 
-                // localstorage
-                const ls = localStorage;
-                if(ls.hasOwnProperty("initrepo")){
-                    const lsCharacters = JSON.parse(ls.getItem("initrepo"));
-                    characters = lsCharacters.map(item => {
+                function initCharacterLoad(path){
+                    const arr = path.map(item => {
                         const keys = Object.keys(item);
                         let obj = {};
                         keys.forEach(key => {
@@ -384,6 +373,29 @@ var myNameSpace = myNameSpace || {};
                         });
                         return new person(obj);
                     });
+                    return arr.map(item => item);
+                };
+
+                // localstorage
+                const ls = localStorage;
+                if(ls.hasOwnProperty("initrepo")){
+                    const items = JSON.parse(ls.getItem("initrepo"));
+                    if(items.hasOwnProperty("activeCharacterIndex")){
+                        activeCharacterIndex = items.activeCharacterIndex;
+                        characters = initCharacterLoad(items.characters);
+                    } else {
+                        characters = initCharacterLoad(items);
+                    }
+                    // const lsCharacters = JSON.parse(ls.getItem("initrepo"));
+                    // characters = lsCharacters.map(item => {
+                    //     const keys = Object.keys(item);
+                    //     let obj = {};
+                    //     keys.forEach(key => {
+                    //         obj[key.toLowerCase()] = item[key];
+                    //     });
+                    //     return new person(obj);
+                    // });
+                    activeCharacter = characters.map(item => item);
                     updateList();
                 }
 
